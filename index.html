@@ -39,12 +39,12 @@
         <form>
             <div class="input-group">
                 <span class="input-group-text" id="depositAmtLabel">Amount</span>
-                <input type="text" id="depositAmt" class="form-control" placeholder="" aria-label="initial Amt" aria-describedby="basic-addon1">
+                <input type="text" id="depositAmt" class="form-control" placeholder="">
             </div>
 
             <div class="input-group">
                 <span class="input-group-text" id="depositNoteLabel">Note (optional)</span>
-                <input type="text" id="depositNote" class="form-control" aria-label="yearly interest" aria-describedby="basic-addon2">
+                <input type="text" id="depositNote" class="form-control">
             </div>
 
             <button class="btn btn1" type="button" style="margin-top:30px"; id="deposit-btn" onclick="myDeposit(); closeThis();">Deposit</button>
@@ -60,12 +60,12 @@
         <form>
             <div class="input-group">
                 <span class="input-group-text" id="withdrawalAmtLabel">Amount</span>
-                <input type="text" id="withdrawalAmt" class="form-control" placeholder="" aria-label="initial Amt" aria-describedby="basic-addon1">
+                <input type="text" id="withdrawalAmt" class="form-control" placeholder="">
             </div>
 
             <div class="input-group">
                 <span class="input-group-text" id="withdrawalNoteLabel">Note (optional)</span>
-                <input type="text" id="withdrawalNote" class="form-control" aria-label="yearly interest" aria-describedby="basic-addon2">
+                <input type="text" id="withdrawalNote" class="form-control">
             </div>
 
             <button class="btn btn1" type="button" style="margin-top:30px"; id="withdrawal-btn" onclick="myWithdrawal(); closeThis();">Withdrawal</button>
@@ -81,15 +81,15 @@
         <form>
             <div class="input-group">
                 <span class="input-group-text" id="transferAmtLabel">Amount</span>
-                <input type="text" id="transferAmt" class="form-control" placeholder="" aria-label="initial Amt" aria-describedby="basic-addon1">
+                <input type="text" id="transferAmt" class="form-control" placeholder="">
             </div>
 
             <div class="input-group">
                 <span class="input-group-text" id="transferNoteLabel">Note (optional)</span>
-                <input type="text" id="transferNote" class="form-control" aria-label="yearly interest" aria-describedby="basic-addon2">
+                <input type="text" id="transferNote" class="form-control">
             </div>
 
-            <button class="btn btn1" type="button" style="margin-top:30px"; id="transfer-btn" onclick="myDeposit(); closeThis();">Transfer</button>
+            <button class="btn btn1" type="button" style="margin-top:30px"; id="transfer-btn" onclick="myTransfer(); closeThis();">Transfer</button>
         </form>
     </div>
 </div>
@@ -105,7 +105,9 @@
             document.getElementById("bal").innerHTML = "-$" + newBal.toFixed(2);
         } else {document.getElementById("bal").innerHTML = "$" + balance.toFixed(2);}
 
-        // document.getElementById("bal").innerHTML = balance.toFixed(2);
+        var note = document.getElementById("depositNote").value;
+
+        depositLogs(deposit, note);
 
         clearFields('depositAmt', 'depositNote');
     }
@@ -122,13 +124,25 @@
         clearFields('withdrawalAmt', 'withdrawalNote');
     }
 
+    function myTransfer() {
+        var transfer = parseInt(document.getElementById("transferAmt").value);
+        balance -= transfer;
+
+        if (balance < 0){
+            var newBal = balance * -1;
+            document.getElementById("bal").innerHTML = "-$" + newBal.toFixed(2);
+        } else {document.getElementById("bal").innerHTML = "$" + balance.toFixed(2);}
+
+        clearFields('transferAmt', 'transferNote');
+    }
+
     function clearFields(x, y) {
         document.getElementById(x).value = "";
         document.getElementById(y).value = "";
     }
 </script>
 
-<script  type="text/javascript">
+<script type="text/javascript">
     function openThis(selection) {
         var arrayOfElements=document.getElementsByClassName("dashboard-buttons-container");
         var lengthOfArray=arrayOfElements.length;
@@ -140,14 +154,13 @@
 
         switch (selection){
             case 'deposit':
-                var ele = document.getElementById('deposit-display');
-                ele.style.display="block";
+                document.getElementById('deposit-display').style.display="block";
                 break;
-
             case 'withdrawal':
                 document.getElementById('withdrawal-display').style.display="block";
                 break;
             case 'transfer':
+                document.getElementById('transfer-display').style.display="block";
                 break;
 
         }
@@ -178,9 +191,33 @@
 
 
 
-<div id="logs">
-
+<div class="logs">
+    <p>Posted</p>
+    <table>
+        <tbody id="tableBody"></tbody>
+    </table>
 </div>
+
+<script type="text/javascript">
+    function depositLogs(amt, note) {
+        var tableBody = document.getElementById("tableBody");
+        var row = document.createElement("tr");
+
+        var dateCell = document.createElement("td");
+        dateCell.textContent = "date";
+        row.appendChild(dateCell);
+
+        var noteCell = document.createElement("td");
+        noteCell.textContent = note;
+        row.appendChild(noteCell);
+
+        var amtCell = document.createElement("td");
+        amtCell.textContent = amt;
+        row.appendChild(amtCell);
+
+        tableBody.appendChild(row);
+    }
+</script>
 
 
 </body>
@@ -197,21 +234,6 @@ This can also be used when adding logs for transactions!
    </script>
 
 Remove the inner html from Balance $ and then add the new value.
-
-
-var id = arrayOfElements[i].id;
-            if (id == 'close-button'){
-                arrayOfElements[i].style.display="block";
-            }
-            else {
-                switch(selection){
-                    case 'deposit':
-                        if (id == 'deposit-display'){
-                            arrayOfElements[i].style.display="block";
-                        }
-                        break;
-                }
-            }
 
 
 
